@@ -2,8 +2,8 @@
 <p>
 </p>
 
-O objetivo dessa entrega é realizar o que está no pdf anexado, ou seja, recriar a tela
-do "Tinder Fluxo" que foi disponibilizada no arquivo.
+O objetivo desse repositório é realizar o que foi definido no processo seletivo do PAME 21.2,
+para a empresa júnio Fluxo Consultoria.
 
 ***
 Pedro Achcar
