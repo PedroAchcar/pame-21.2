@@ -1,0 +1,205 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+.container {
+    display: flex;
+    
+}
+
+.left {
+    width: 25%;
+    height: 100vh;
+}
+
+.sup-nav-bar{
+    padding: 20px 0;
+    background: linear-gradient(262deg, #ff7854, #fd267d);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#logo {
+    width: 32px;
+    border-radius: 30px;
+}
+
+#logo-name {
+    padding-right: 5px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 30px;
+    color: lightgrey;
+    font-weight: bold;
+}
+
+.sup-btn {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 30px;
+}
+
+.mid-nav-bar {
+    display: flex;
+    font-weight: bold;
+    justify-content: space-around;
+    padding: 15px;
+}
+
+#text-matches {
+    text-decoration: underline;
+    text-decoration-color: #fd267d;
+    text-decoration-style: solid;
+}
+
+.bot-nav-bar {
+    text-align: center;
+}
+
+#box {
+    width: 150px;
+    height: 200px;
+    background: linear-gradient(262deg, #ff7854, #fd267d);
+    margin-top: 40px;
+    margin-left: 90px;
+    border-radius: 15px;
+}
+
+#text-pergunta-pame {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+#text-resposta-pame {
+    margin-top: 10px;
+}
+
+.right {
+    width: 75%;
+    background-color: lightgrey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile {
+    width: 300px;
+    height: 478px;
+    margin-top: 100px;
+}
+
+.bot-images {
+    width: 900px;
+    padding-bottom: 10px;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: space-evenly;
+    color: rgb(129, 129, 129);
+    align-items: center;
+}
+
+#ocultar {
+    background-color: rgb(129, 129, 129);
+    color: lightgrey;
+    padding: 7px;
+    border-radius: 13px;
+    font-size: small;
+}
+
+.photo {
+    height: 80%;
+    display: flex;
+    flex-direction: column-reverse;
+    background: url("./assets/eu.jpg");
+    background-size:cover;
+    border-radius: 5%;
+}
+
+.description {
+    height: 20%;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    font-weight: bold;
+    font-size: larger;
+    padding: 10px 0px 0px 10px;
+}
+
+#name {
+    display: flex;
+    text-indent: 7px;
+}
+
+#age {
+    font-weight: 400;
+}
+
+#online {
+    display: flex;
+    flex-direction: column;
+}
+
+#online-in {
+    font-size: x-small;
+    font-weight: 400;
+}
+
+#facul {
+    font-size: small;
+    font-weight: 400;
+}
+
+.like-btn {
+    background-color: black;
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#return-btn {
+    height: 40px;
+    border: solid;
+    border-width: thin;
+    border-radius: 100%;
+    border-color: lightgray;
+}
+
+#x-btn {
+    height: 45px;
+    border: solid;
+    border-width: thin;
+    border-radius: 100%;
+    border-color: #c92929;
+}
+
+#star-btn {
+    height: 40px;
+    border: solid;
+    border-width: thin;
+    border-radius: 100%;
+    border-color: aqua;
+}
+
+#heart-btn {
+    height: 45px;
+    border: solid;
+    border-width: thin;
+    border-radius: 100%;
+    border-color: rgb(130, 236, 130);
+}
+
+#lightning-btn {
+    height: 40px;
+    border: solid;
+    border-width: thin;
+    border-radius: 100%;
+    border-color: rgb(160, 35, 160);
+}
