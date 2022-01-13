@@ -1,5 +1,5 @@
 from onibus import Onibus
-from paradas import Parada
+from paradas import Parada, Rota
 from pessoas import Fiscal, Motorista
 
 
@@ -9,7 +9,7 @@ def mostrarOnibus(onibus):
         return -1
     else:
         for i in onibus:
-            print(i)
+            print(f'{i} - {i.descricao}')
 
 
 def selecionarOnibus(onibus):
@@ -65,20 +65,47 @@ def selecionarFiscal(fiscais):
             if a == i.codigo_fiscal:
                 return i, fiscais.index(i)
 
-# def selecionarFiscal(fiscais):
-#     if fiscais == []:
-#         print('Nenhuma fiscal adicionado.')
-#     else:
-#         for i in fiscais:
-#             print(i)
-#     if retorno == -1:
-#         pass
-#     else:
-#         a = int(input('Qual fiscal deseja escolher? '))
 
-#         for i in fiscais:
-#             if a == i.codigo_fiscal:
-#                 return i
+def mostrarParadas(paradas):
+    if paradas == []:
+        print('Nenhuma parada adicionada.')
+        return -1
+    else:
+        for i in paradas:
+            print(i)
+
+
+def selecionarParada(paradas):
+    retorno = mostrarParadas(paradas)
+    if retorno == -1:
+        pass
+    else:
+        a = int(input('Qual parada deseja escolher? '))
+
+        for i in paradas:
+            if a == i.codigo_parada:
+                return i, paradas.index(i)
+
+
+def mostrarRotas(rotas):
+    if rotas == []:
+        print('Nenhuma rota adicionada.')
+        return -1
+    else:
+        for i in range(len(rotas)):
+            print(rotas[i][0])
+
+
+def selecionarRota(rotas):
+    retorno = mostrarRotas(rotas)
+    if retorno == -1:
+        pass
+    else:
+        a = int(input('Qual rota deseja escolher? '))
+
+        for i in rotas:
+            if a == i[0].codigo_rota:
+                return i, rotas.index(i)
 
 
 def menuCriar():
@@ -87,14 +114,16 @@ def menuCriar():
     print('2 - Criar ponto de parada')
     print('3 - Criar motorista')
     print('4 - Criar fiscal')
+    print('5 - Criar rota')
 
 
 def menuMostrar():
     print('-'*40)
     print('1 - Mostrar onibus')
-    print('2 - Mostrar rotas')
+    print('2 - Mostrar paradas')
     print('3 - Mostrar motoristas')
     print('4 - Mostrar fiscais')
+    print('5 - Mostrar rotas')
 
 
 def menuAssignar():
@@ -110,7 +139,6 @@ def menuAlterar():
     print('2 - Alterar dados da parada')
     print('3 - Alterar dados do motorista')
     print('4 - Alterar dados do fiscal')
-    print('5 - Alterar rota do ônibus')
 
 
 def menuDeletar():
@@ -133,9 +161,10 @@ def menuPrincipal():
 
 def main():
     onibus = []
-    paradas = Parada([])
+    paradas = []
     motoristas = []
     fiscais = []
+    rotas = []
 
     while True:
         menuPrincipal()
@@ -146,23 +175,17 @@ def main():
             op = input('O que deseja criar? ')
 
             if op == '1':
-                linha = int(input('Digite o numero da linha: '))
+                linha = int(
+                    input('Digite o numero da linha (somente numeros): '))
                 descricao = input(
                     'Digite o itinerario (Ex: Copacabana x Fundão): ')
-                # if onibus == []:
                 onibus.append(Onibus(linha, descricao))
-# PROBLEMA ------------------------------------------------------
 
-                # else:
-                # if linha == i.codigo_onibus:
-                #     print('Linha ja existente')
-                # else:
-                #   onibus.append(Onibus(linha))
-
-# PROBLEMA ------------------------------------------------------
             elif op == '2':
-                ponto = (input('Digite o nome do ponto de parada: '))
-                paradas.criarParada(ponto)
+                codigo_parada = int(
+                    input('Codigo da parada (somente numeros): '))
+                nome_parada = input('Digite o nome do ponto de parada: ')
+                paradas.append(Parada(codigo_parada, nome_parada))
 
             elif op == '3':
                 nome_mot = input('Nome do motorista: ')
@@ -177,6 +200,21 @@ def main():
                 fiscal = Fiscal(nome_fis, codigo_fis)
                 fiscais.append(fiscal)
 
+            elif op == '5':
+                rota = []
+                try:
+                    while True:
+                        parada, parada_index = selecionarParada(paradas)
+                        rota.append(parada)
+                        op = input('Parar de adicionar pontos a rota (s/n)? ')
+                        if op == 's':
+                            break
+                    codigo_rota = int(
+                        input('Codigo da rota (somente numeros): '))
+                    rotas.append([Rota(rota, codigo_rota)])
+                except:
+                    print('Nenhuma parada adicionada')
+
             else:
                 print('Opcao invalida!')
 
@@ -188,14 +226,16 @@ def main():
                 mostrarOnibus(onibus)
 
             elif op == '2':
-                print('AINDA NÃO FIZ')
-                pass
+                mostrarParadas(paradas)
 
             elif op == '3':
                 mostrarMotoristas(motoristas)
 
             elif op == '4':
                 mostrarFiscais(fiscais)
+
+            elif op == '5':
+                mostrarRotas(rotas)
 
             else:
                 print('Opcao invalida!')
@@ -204,37 +244,43 @@ def main():
             menuAssignar()
             op = input('O que deseja assignar? ')
 
-            if op == '1':
-                bus = selecionarOnibus(onibus)
-                moto = selecionarMotorista(motoristas)
-                if bus == None or moto == None:
-                    print('Alguma informacao faltando')
+            try:
+                if op == '1':
+                    bus, bus_index = selecionarOnibus(onibus)
+                    moto, moto_index = selecionarMotorista(motoristas)
+                    if bus == None or moto == None:
+                        print('Alguma informacao faltando')
+                    else:
+                        bus.assignarMotorista(moto)
+                        moto.assignarOnibus(bus)
+
+                elif op == '2':
+                    bus, bus_index = selecionarOnibus(onibus)
+                    fiscal, fisc_index = selecionarFiscal(fiscais)
+                    if bus == None or fiscal == None:
+                        print('Alguma informacao faltando')
+                    else:
+                        bus.assignarFiscal(fiscal)
+                        fiscal.assignarOnibus(bus)
+
+                elif op == '3':
+                    rota, rota_index = selecionarRota(rotas)
+                    bus, bus_index = selecionarOnibus(onibus)
+                    if bus == None or rota == None:
+                        print('Alguma informacao faltando')
+                    else:
+                        bus.assignarRota(rota)
                 else:
-                    bus.assignarMotorista(moto)
-                    moto.assignarOnibus(bus)
-
-            elif op == '2':
-                bus = selecionarOnibus(onibus)
-                fiscal = selecionarFiscal(fiscais)
-                if bus == None or fiscal == None:
-                    print('Alguma informacao faltando')
-                else:
-                    bus.assignarFiscal(fiscal)
-                    fiscal.assignarOnibus(bus)
-
-            elif op == '3':
-                print('AINDA NÃO FIZ')
-                pass
-
-            else:
-                print('Opcao invalida!')
+                    print('Opcao invalida!')
+            except:
+                print('Onibus, motorista, fiscal ou rota não cadastrado ainda.')
 
         elif op_acao == '4':
             menuAlterar()
             op = input('O que deseja alterar? ')
 
             if op == '1':
-                bus = selecionarOnibus(onibus)
+                bus, bus_index = selecionarOnibus(onibus)
                 print('1 - Codigo do onibus')
                 print('2 - Descricao do onibus')
                 op_dado = input('Qual dado deseja alterar? ')
@@ -248,14 +294,21 @@ def main():
                     print('Selecione uma opcao valida')
 
             if op == '2':
-                # ponto = selecionarParada(paradas)
-                # dado = input('Digite o novo valor para a parada: ')
-                # parada = dado
-                print('AINDA NÃO FIZ')
-                pass
+                parada, parada_index = selecionarParada(paradas)
+                print('1 - Codigo do ponto de parada')
+                print('2 - Nome do ponto de parada')
+                op_dado = input('Qual dado deseja alterar? ')
+                dado = input('Digite o novo dado: ')
+
+                if op_dado == '1':
+                    parada.codigo_parada = dado
+                elif op_dado == '2':
+                    parada.nome = dado
+                else:
+                    print('Selecione uma opcao valida')
 
             if op == '3':
-                moto = selecionarMotorista(motoristas)
+                moto, moto_index = selecionarMotorista(motoristas)
                 print('1 - Nome do motorista')
                 print('2 - Codigo do motorista')
                 op_dado = input('Qual dado deseja alterar? ')
@@ -269,7 +322,7 @@ def main():
                     print('Selecione uma opcao valida')
 
             if op == '4':
-                fisc = selecionarFiscal(fiscais)
+                fisc, fisc_index = selecionarFiscal(fiscais)
                 print('1 - Nome do fiscal')
                 print('2 - Codigo do fiscal')
                 op_dado = input('Qual dado deseja alterar? ')
@@ -282,28 +335,32 @@ def main():
                 else:
                     print('Selecione uma opcao valida')
 
-            if op == '5':
-                # fisc = selecionarFiscal(fiscais)
-                # print('1 - Nome do fiscal')
-                # print('2 - Codigo do fiscal')
-                # op_dado = input('Qual dado deseja alterar? ')
-                # dado = input('Digite o novo dado: ')
-
-                # if op_dado == '1':
-                #     fisc.nome = dado
-                # elif op_dado == '2':
-                #     fisc.codigo_fiscal = dado
-                # else:
-                #     print('Selecione uma opcao valida')
-                print('AINDA NÃO FIZ')
-                pass
-
         elif op_acao == '5':
             menuDeletar()
             op = input('O que deseja deletar? ')
 
-            if op == '1':
-                bus = selecionarOnibus(onibus)
+            try:
+                if op == '1':
+                    bus, bus_index = selecionarOnibus(onibus)
+                    onibus.pop(bus_index)
+
+                elif op == '2':
+                    parada, parada_index = selecionarParada(paradas)
+                    paradas.pop(parada_index)
+
+                elif op == '3':
+                    moto, moto_index = selecionarMotorista(motoristas)
+                    motoristas.pop(moto_index)
+
+                elif op == '4':
+                    fisc, fisc_index = selecionarFiscal(fiscais)
+                    fiscais.pop(fisc_index)
+
+                else:
+                    print('Opcao invalida')
+
+            except:
+                print('Onibus, motorista, fiscal ou rota não cadastrado ainda.')
 
         elif op_acao == '0':
             break
