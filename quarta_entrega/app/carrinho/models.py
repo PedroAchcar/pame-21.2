@@ -12,8 +12,8 @@ class Carrinho(db.Model):
     data_compra = db.Column(db.DateTime, default=datetime.now)
     valor_total = db.Column(db.Float, nullable=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    item = db.relationship('Item', backref='carrinho')
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    item = db.relationship("Item", backref="carrinho")
 
     def json(self):
         return {
@@ -31,7 +31,7 @@ class Item(db.Model):
     quantidade = db.Column(db.Integer)
     valor = db.Column(db.Float)
 
-    carrinho_id = db.Column(db.Integer, db.ForeignKey('carrinho.id'))
+    carrinho_id = db.Column(db.Integer, db.ForeignKey("carrinho.id"))
 
     def json(self):
         return {

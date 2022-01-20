@@ -9,7 +9,7 @@ class Cupom(db.Model):
     carro = db.Column(db.Boolean, default=True)
     moto = db.Column(db.Boolean, default=True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     def json(self):
         return {

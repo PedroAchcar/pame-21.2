@@ -14,8 +14,8 @@ class User(db.Model):
     address = db.Column(db.String(50))
     cpf = db.Column(db.String(15), unique=True)
 
-    cupom = db.relationship('Cupom', backref='user')
-    carrinho = db.relationship('Carrinho', backref='user', uselist=False)
+    cupom = db.relationship("Cupom", backref="user")
+    carrinho = db.relationship("Carrinho", backref="user", uselist=False)
 
     def json(self):
         return {
