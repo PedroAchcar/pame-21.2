@@ -25,7 +25,7 @@ class Item(db.Model):
     quantidade = db.Column(db.Integer)
 
     carrinho_id = db.Column(db.Integer, db.ForeignKey("carrinho.id"))
-    produto_id = db.Column(db.Integer, db.ForeignKey("produto.id"))
+    produto_id = db.Column(db.Integer, db.ForeignKey("product.id"))
 
     def json(self):
         return {
