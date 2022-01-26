@@ -23,7 +23,7 @@ class User(db.Model):
 
 
 class Address(db.Model):
-    __tablename__ = 'address'
+    __tablename__ = 'endereco'
 
     id = db.Column(db.Integer, primary_key=True)
     cep = db.Column(db.String(8), nullable=False)
