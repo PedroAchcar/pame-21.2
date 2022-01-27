@@ -21,12 +21,12 @@ class Produtos(MethodView):  # /produtos
             if nome == None or valor == None:
                 return {'error': 'faltando dados'}, 400
 
-            user = Product(nome=nome, descricao=descricao, valor=valor)
+            prod = Product(nome=nome, descricao=descricao, valor=valor)
 
-            db.session.add(user)
+            db.session.add(prod)
             db.session.commit()
 
-            return user.json(), 200
+            return prod.json(), 200
 
         except Exception as e:
             print(e)

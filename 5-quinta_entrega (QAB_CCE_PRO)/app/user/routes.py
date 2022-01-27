@@ -14,9 +14,9 @@ user_api.add_url_rule('/enderecos/<int:user_id>',
                       methods=['GET', 'POST'])
 
 user_api.add_url_rule('/usuarios',
-                      view_func=Usuario.as_view('usuario'),
+                      view_func=Usuario.as_view('usuarios'),
                       methods=['GET', 'POST'])
 
 user_api.add_url_rule('/usuario/<int:user_id>',
-                      view_func=Usuarios.as_view('usuarios'),
+                      view_func=Usuarios.as_view('usuario'),
                       methods=['GET', 'PUT', 'PATCH', 'DELETE'])
