@@ -12,7 +12,9 @@ from app.address.models import Address
 
 
 class Usuarios(MethodView):  # /usuarios
-    decorators = [jwt_required()]
+    # decorators = [jwt_required()]
+    # nao posso ter esse decorator aqui, pois nao iria conseguir cadastrar o primeiro
+    # usuario para pegar o token e cadastrar os outros.
 
     def get(self):
         users = User.query.all()
