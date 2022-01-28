@@ -1,89 +1,19 @@
-from flask import request, jsonify
+import bcrypt
+
+from flask import jsonify, render_template, request
 from flask.views import MethodView
-from app.extensions import db
-from app.user.models import User, Address
+from flask_mail import Message
+from flask_jwt_extended import create_access_token, jwt_required
 
-
-class Endereco(MethodView):  # /endereco/<int:endereco_id>
-    def get(self, endereco_id):
-        endereco = Address.query.filter_by(id=endereco_id).first()
-
-        return endereco.json(), 200
-
-    def patch(self, endereco_id):
-        endereco = Address.query.get_or_404(endereco_id)
-        body = request.json
-
-        try:
-            cep = body.get('cep', endereco.cep)
-            logradouro = body.get('logradouro', endereco.logradouro)
-            numero = body.get('numero', endereco.numero)
-            bairro = body.get('bairro', endereco.bairro)
-            cidade = body.get('cpf', endereco.cidade)
-            estado = body.get('cpf', endereco.estado)
-
-            endereco.cep = cep
-            endereco.logradouro = logradouro
-            endereco.numero = numero
-            endereco.bairro = bairro
-            endereco.cpf = cidade
-            endereco.cpf = estado
-
-            db.session.commit()
-
-            return endereco.json(), 200
-
-        except:
-            return {'error': 'ocorreu um erro'}, 400
-
-    def delete(self, endereco_id):
-        endereco = Address.query.get_or_404(endereco_id)
-
-        db.session.delete(endereco)
-        db.session.commit()
-
-        return endereco.json(), 200
-
-
-class Enderecos(MethodView):  # /enderecos/<int:user_id>
-    def get(self, user_id):
-        enderecos = Address.query.filter_by(user_id=user_id)
-
-        return jsonify([endereco.json() for endereco in enderecos]), 200
-
-    def post(self, user_id):
-        body = request.json
-
-        try:
-            cep = body.get('cep')
-            logradouro = body.get('logradouro')
-            numero = body.get('numero')
-            bairro = body.get('bairro')
-            cidade = body.get('cidade')
-            estado = body.get('estado')
-
-            if cep == None:
-                return {'error': 'faltando dados'}, 400
-
-            endereco = Address(cep=cep,
-                               logradouro=logradouro,
-                               numero=numero,
-                               bairro=bairro,
-                               cidade=cidade,
-                               estado=estado,
-                               user_id=user_id)
-
-            db.session.add(endereco)
-            db.session.commit()
-
-            return endereco.json(), 200
-
-        except Exception as e:
-            print(e)
-            return {'error': 'algum erro ocorreu'}, 400
+from app.sensive import Sensive as sv
+from app.extensions import db, mail
+from app.user.models import User
+from app.address.models import Address
 
 
 class Usuarios(MethodView):  # /usuarios
+    decorators = [jwt_required()]
+
     def get(self):
         users = User.query.all()
 
@@ -97,14 +27,35 @@ class Usuarios(MethodView):  # /usuarios
             telefone = body.get('telefone')
             email = body.get('email')
             cpf = body.get('cpf')
+            senha = body.get('senha')
 
-            if nome == None or telefone == None:
+            if not isinstance(nome, str) or not isinstance(telefone, str) \
+                    or not isinstance(email, str) or not isinstance(cpf, str) \
+                    or not isinstance(senha, str):
+                return {'error': 'invalid data'}, 400
+
+            if nome == None or email == None or senha == None:
                 return {'error': 'faltando dados'}, 400
 
-            user = User(nome=nome, telefone=telefone, email=email, cpf=cpf)
+            senha_hash = bcrypt.hashpw(senha.encode(), bcrypt.gensalt())
+
+            user = User(nome=nome,
+                        telefone=telefone,
+                        email=email,
+                        senha_hash=senha_hash,
+                        cpf=cpf)
 
             db.session.add(user)
             db.session.commit()
+
+            msg = Message(
+                sender=sv.MAIL_SENDER,
+                recipients=[email],
+                subject='Bem-Vindo!',
+                html=render_template('email.html', nome=nome)
+            )
+
+            mail.send(msg)
 
             return user.json(), 200
 
@@ -114,6 +65,8 @@ class Usuarios(MethodView):  # /usuarios
 
 
 class Usuario(MethodView):  # /usuario/<int:id>
+    decorators = [jwt_required()]
+
     def get(self, id):
         user = User.query.get_or_404(id)
 
@@ -128,6 +81,10 @@ class Usuario(MethodView):  # /usuario/<int:id>
             telefone = body.get('telefone')
             email = body.get('email')
             cpf = body.get('cpf')
+
+            if not isinstance(nome, str) or not isinstance(telefone, str) \
+                    or not isinstance(email, str) or not isinstance(cpf, str):
+                return {'error': 'invalid data'}, 400
 
             if nome == None or telefone == None or email == None or cpf == None:
                 return {'error': 'faltando dados'}, 400
@@ -154,17 +111,25 @@ class Usuario(MethodView):  # /usuario/<int:id>
             telefone = body.get('telefone', user.telefone)
             email = body.get('email', user.email)
             cpf = body.get('cpf', user.cpf)
+            endereco = Address.query.get_or_404(body.get('endereco'))
+
+            if not isinstance(nome, str) or not isinstance(telefone, str) \
+                    or not isinstance(email, str) or not isinstance(cpf, str) \
+                    or not isinstance(endereco, str):
+                return {'error': 'invalid data'}, 400
 
             user.nome = nome
             user.telefone = telefone
             user.email = email
             user.cpf = cpf
+            user.endereco = endereco
 
             db.session.commit()
 
             return user.json(), 200
 
-        except:
+        except Exception as e:
+            print(e)
             return {'error': 'ocorreu um erro'}, 400
 
     def delete(self, id):
@@ -173,4 +138,27 @@ class Usuario(MethodView):  # /usuario/<int:id>
         db.session.delete(user)
         db.session.commit()
 
-        return user.json(), 200
+        return {'user_id': id,
+                'status': 'apagado com sucesso',
+                }, 200
+
+
+class UsuarioLogin(MethodView):  # /login
+    def post(self):
+        body = request.json
+
+        email = body.get('email')
+        senha = body.get('senha')
+
+        if not isinstance(email, str) or not isinstance(senha, str):
+            return {'error': 'invalid data'}, 400
+
+        user = User.query.filter_by(email=email).first()
+
+        if not user or not bcrypt.checkpw(senha.encode(), user.senha_hash):
+            return {'error': 'email ou senha incorretos'}, 400
+
+        token = create_access_token(identity=user.id)
+
+        return {"user": user.json(),
+                'token': token}, 200

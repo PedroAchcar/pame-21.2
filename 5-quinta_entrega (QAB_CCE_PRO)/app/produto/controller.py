@@ -18,6 +18,10 @@ class Produtos(MethodView):  # /produtos
             descricao = body.get('descricao')
             valor = body.get('valor')
 
+            if not isinstance(nome, str) or not isinstance(descricao, str) \
+                    or not isinstance(valor, float):
+                return {'error': 'invalid data'}, 400
+
             if nome == None or valor == None:
                 return {'error': 'faltando dados'}, 400
 
@@ -48,6 +52,10 @@ class ProdutoById(MethodView):  # /produto/<int:produto_id>
             descricao = body.get('descricao')
             valor = body.get('valor')
 
+            if not isinstance(nome, str) or not isinstance(descricao, str) \
+                    or not isinstance(valor, float):
+                return {'error': 'invalid data'}, 400
+
             if nome == None or descricao == None or valor == None:
                 return {'error': 'faltando dados'}, 400
 
@@ -70,7 +78,11 @@ class ProdutoById(MethodView):  # /produto/<int:produto_id>
         try:
             nome = body.get('nome', prod.nome)
             descricao = body.get('descricao', prod.descricao)
-            valor = body.get('valor', prod.valor)
+            valor = float(body.get('valor', prod.valor))
+
+            if not isinstance(nome, str) or not isinstance(descricao, str) \
+                    or not isinstance(valor, float):
+                return {'error': 'invalid data'}, 400
 
             prod.nome = nome
             prod.descricao = descricao
