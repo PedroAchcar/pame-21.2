@@ -10,7 +10,6 @@ class Product(db.Model):
     valor = db.Column(db.Float, nullable=False)
 
     item = db.relationship("Item", backref="product", uselist=False)
-    # NÃO TENHO CERTEZA DESSA RELAÇÃO /\, UM PRODUTO NÃO TEM ITEM PORÉM ITEM TEM PRODUTO SEMPRE.
 
     def json(self):
         return {
