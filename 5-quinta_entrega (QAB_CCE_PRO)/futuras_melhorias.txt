@@ -1,0 +1,6 @@
+  -Quando adicionar/retirar um item no carrinho, calcular e atualizar o valor total a cada item;
+  -Criar função para calcular o valor total quando o usuário clicar em finalizar a compra realmente;
+  -Cupons de desconto?
+  -Adicionar algumas receitas de alguns cookies no models?
+  -Não aprendi como fazer caso uma entidade de uma relação seja deletada do banco outra também seja, exemplo:
+ Não temos mais o usuário x, o carrinho correspondente ao usuário x deveria ser detetado junto.
